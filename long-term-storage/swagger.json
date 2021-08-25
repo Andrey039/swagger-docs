@@ -1,0 +1,1835 @@
+{
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "HTTP API for COIIOT Long term Storage",
+    "title": "COIIOT Long term Storage",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/api/v1",
+  "paths": {
+    "/clients/{client_id}/events": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "events"
+        ],
+        "summary": "Add event",
+        "operationId": "addEventByClientID",
+        "parameters": [
+          {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies if the request is from another service or not",
+            "name": "X-Inter-Service",
+            "in": "header"
+          },
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Session params object.",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/logs": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "logs"
+        ],
+        "summary": "Get logs",
+        "operationId": "getLogs",
+        "parameters": [
+          {
+            "type": "string",
+            "default": "{}",
+            "description": "Logs filter in json format. Before sending, use url encode.\n\nDefault keys:\n- level\n- component\n- search\n\nExample:\n{\"tag_id\": 1, \"level\": \"info\", \"component\": \"digital-twins\", \"search\": \"runtime error\"}\n",
+            "name": "filter",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds), default to now() - 6h",
+            "name": "from_ts",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds), default to now()",
+            "name": "to_ts",
+            "in": "query"
+          },
+          {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer",
+            "default": 1000,
+            "description": "minimum: 1, maximum: 10000",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 0,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "asc(time)",
+              "desc(time)"
+            ],
+            "type": "string",
+            "default": "desc(time)",
+            "description": "Must contain string like asc(field) or desc(field)",
+            "name": "order_by",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/LogObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "logs"
+        ],
+        "summary": "Add log",
+        "operationId": "addLog",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Session params object.",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddLog"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/logs/components": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "logs"
+        ],
+        "summary": "Get components",
+        "operationId": "getLogsComponents",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/LogLabelObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/logs/levels": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "logs"
+        ],
+        "summary": "Get levels",
+        "operationId": "getLogsLevels",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/LogLabelObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/proxy": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "summary": "Proxing clickhouse readonly http requests",
+        "operationId": "proxyQueryRequestReadonly",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Query",
+            "name": "query",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "proxy"
+        ],
+        "summary": "Proxing clickhouse http requests",
+        "operationId": "proxyQueryRequest",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Query",
+            "name": "query",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/query/aggregates": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "aggregates"
+        ],
+        "summary": "Get aggregates",
+        "operationId": "getAggregatesWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "from_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "to_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer",
+            "default": 1000,
+            "description": "minimum: 1, maximum: 10000",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 0,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "asc(time)",
+              "desc(time)"
+            ],
+            "type": "string",
+            "default": "asc(time)",
+            "description": "Must contain string like asc(field) or desc(field)",
+            "name": "order_by",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AggregateObject"
+                  }
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/query/aggregates/aggregate": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "aggregates"
+        ],
+        "summary": "Get aggregate aggregates",
+        "operationId": "getAggregateAggregatesWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "from_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "to_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer",
+            "default": 1000,
+            "description": "minimum: 1, maximum: 10000",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 0,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Aggregate types in json format. Before sending, use url encode.\n\nAllow aggregates:\n- count\n- min\n- max\n- sum\n- avg\n\nExample:\n{\"avg\": {\"alias\": \"my_avg\"}, \"sum\": {}}\n",
+            "name": "aggregates",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object"
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/query/aggregates/current": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "aggregates"
+        ],
+        "summary": "Get current aggregate",
+        "operationId": "getCurrentAggregateWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/AggregateObject"
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/query/aggregates/group": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "aggregates"
+        ],
+        "summary": "Get group aggregates",
+        "operationId": "getGroupAggregatesWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "from_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "to_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer",
+            "default": 1000,
+            "description": "minimum: 1, maximum: 10000",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 0,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "1m",
+              "1h",
+              "1d",
+              "1M",
+              "1Y"
+            ],
+            "type": "string",
+            "name": "period",
+            "in": "query",
+            "required": true
+          },
+          {
+            "enum": [
+              "asc(time)",
+              "desc(time)"
+            ],
+            "type": "string",
+            "default": "asc(time)",
+            "description": "Must contain string like asc(field) or desc(field)",
+            "name": "order_by",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Aggregate types in json format. Before sending, use url encode.\n\nAllow aggregates:\n- count\n- min\n- max\n- sum\n- avg\n\nExample:\n{\"avg\": {\"alias\": \"my_avg\"}, \"sum\": {}}\n",
+            "name": "aggregates",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "As specified in OS time zone database (IANA timezone)\nExample: Europe/Moscow\n",
+            "name": "timezone",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AggregateObjectGroup"
+                  }
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/query/events": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "events"
+        ],
+        "summary": "Get events",
+        "operationId": "getEventsWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "from_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "to_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer",
+            "default": 1000,
+            "description": "minimum: 1, maximum: 10000",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 0,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "asc(time)",
+              "desc(time)"
+            ],
+            "type": "string",
+            "default": "asc(time)",
+            "description": "Must contain string like asc(field) or desc(field)",
+            "name": "order_by",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/EventObject"
+                  }
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/query/events/aggregate": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "events"
+        ],
+        "summary": "Get aggregate events",
+        "operationId": "getAggregateEventsWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "from_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "to_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer",
+            "default": 1000,
+            "description": "minimum: 1, maximum: 10000",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 0,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Aggregate types in json format. Before sending, use url encode.\n\nAllow aggregates:\n- count\n- min\n- max\n- sum\n- avg\n\nExample:\n{\"avg\": {\"alias\": \"my_avg\"}, \"sum\": {}}\n",
+            "name": "aggregates",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "object"
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/query/events/group": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "events"
+        ],
+        "summary": "Get group events",
+        "operationId": "getGroupEventsWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "from_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "unix timestamp (with microseconds)",
+            "name": "to_ts",
+            "in": "query",
+            "required": true
+          },
+          {
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer",
+            "default": 1000,
+            "description": "minimum: 1, maximum: 10000",
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "minimum": 0,
+            "type": "integer",
+            "default": 0,
+            "name": "offset",
+            "in": "query"
+          },
+          {
+            "enum": [
+              "1m",
+              "1h",
+              "1d",
+              "1M",
+              "1Y"
+            ],
+            "type": "string",
+            "name": "period",
+            "in": "query",
+            "required": true
+          },
+          {
+            "enum": [
+              "asc(time)",
+              "desc(time)"
+            ],
+            "type": "string",
+            "default": "asc(time)",
+            "description": "Must contain string like asc(field) or desc(field)",
+            "name": "order_by",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "description": "Aggregate types in json format. Before sending, use url encode.\n\nAllow aggregates:\n- count\n- min\n- max\n- sum\n- avg\n\nExample:\n{\"avg\": {\"alias\": \"my_avg\"}, \"sum\": {}}\n",
+            "name": "aggregates",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "description": "As specified in OS time zone database (IANA timezone)\nExample: Europe/Moscow\n",
+            "name": "timezone",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/EventObjectGroup"
+                  }
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/query/events/latest": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "events"
+        ],
+        "summary": "Get latest event",
+        "operationId": "getLatestEventWithQueryByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "description": "Tag ID",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "required": [
+                "tag_id",
+                "value_type",
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "$ref": "#/definitions/EventObject"
+                },
+                "tag_id": {
+                  "type": "integer",
+                  "example": 1
+                },
+                "value_type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "404": {
+            "description": "Client not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/clients/{client_id}/upsert/aggregates": {
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "aggregates"
+        ],
+        "summary": "Upsert aggregate",
+        "operationId": "upsertAggregateByClientID",
+        "parameters": [
+          {
+            "type": "integer",
+            "description": "Client ID",
+            "name": "client_id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies if the request is from another service or not",
+            "name": "X-Inter-Service",
+            "in": "header"
+          },
+          {
+            "description": "Session params object.",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpsertAggregate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad params suplied",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/swagger.json": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "swagger"
+        ],
+        "summary": "Get swagger json",
+        "operationId": "getSwaggerJSON",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AddEvent": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value"
+      ],
+      "properties": {
+        "payload": {
+          "type": "object",
+          "x-nullable": true
+        },
+        "received_at": {
+          "description": "Timestamp with microseconds",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision, server will generate it by itself if not exists.",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "value": {
+          "description": "Value of the tag can contain \"number\", \"boolean\", \"string\", \"location\", \"timestamp\".\nExamples:\n- value: 1\n- value: 0.5\n- value: true\n- value: 1571740334\n- value: \"closed\"\n- value: {\"lat\": 37.884120, \"lng\": 55.613116}\n",
+          "example": 0.5
+        }
+      }
+    },
+    "AddLog": {
+      "type": "object",
+      "required": [
+        "level",
+        "component",
+        "value"
+      ],
+      "properties": {
+        "component": {
+          "type": "integer",
+          "format": "uint8",
+          "example": 1
+        },
+        "labels": {
+          "description": "Non typed dictionary for user defined data.",
+          "type": "object",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "{\"key\": \"value\"}"
+        },
+        "level": {
+          "type": "integer",
+          "format": "uint8",
+          "example": 1
+        },
+        "value": {
+          "type": "string",
+          "example": "example message"
+        }
+      }
+    },
+    "AggregateObject": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "x-nullable": true
+        },
+        "received_at": {
+          "description": "Timestamp with microseconds",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "time": {
+          "description": "Timestamp with microseconds",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "value": {
+          "description": "Value of the tag can contain \"number\".\nExamples:\n- value: 1\n- value: 0.5\n",
+          "x-nullable": true,
+          "example": 0.5
+        }
+      }
+    },
+    "AggregateObjectGroup": {
+      "type": "object",
+      "properties": {
+        "end_time": {
+          "type": "number",
+          "x-nullable": true,
+          "example": 1556112646687877
+        },
+        "start_time": {
+          "type": "number",
+          "x-nullable": true,
+          "example": 1556112631687877
+        },
+        "value": {
+          "type": "object",
+          "x-nullable": true
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "example": 300
+        },
+        "message": {
+          "type": "string",
+          "example": "Something bad happens."
+        }
+      }
+    },
+    "EventObject": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "x-nullable": true
+        },
+        "received_at": {
+          "description": "Timestamp with microseconds",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "time": {
+          "description": "Timestamp with microseconds",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "value": {
+          "description": "Value of the tag can contain \"number\", \"boolean\", \"string\", \"location\", \"timestamp\".\nExamples:\n- value: 1\n- value: 0.5\n- value: true\n- value: 1571740334\n- value: \"closed\"\n- value: {\"lat\": 37.884120, \"lng\": 55.613116}\n",
+          "x-nullable": true,
+          "example": 0.5
+        }
+      }
+    },
+    "EventObjectGroup": {
+      "type": "object",
+      "properties": {
+        "end_time": {
+          "type": "number",
+          "x-nullable": true,
+          "example": 1556112646687877
+        },
+        "start_time": {
+          "type": "number",
+          "x-nullable": true,
+          "example": 1556112631687877
+        },
+        "value": {
+          "type": "object",
+          "x-nullable": true
+        }
+      }
+    },
+    "LogLabelObject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "uint8",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "info"
+        }
+      }
+    },
+    "LogObject": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "integer",
+          "format": "uint8",
+          "example": 1
+        },
+        "labels": {
+          "description": "Non typed dictionary for user defined data.",
+          "type": "object",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "{\"key\": \"value\"}"
+        },
+        "level": {
+          "type": "integer",
+          "format": "uint8",
+          "example": 1
+        },
+        "time": {
+          "type": "integer",
+          "example": 1556112646687877
+        },
+        "value": {
+          "type": "string",
+          "example": "example message"
+        }
+      }
+    },
+    "UpsertAggregate": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value"
+      ],
+      "properties": {
+        "payload": {
+          "type": "object",
+          "x-nullable": true
+        },
+        "received_at": {
+          "description": "Timestamp with microseconds",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision, server will generate it by itself if not exists.",
+          "type": "integer",
+          "format": "int64",
+          "x-nullable": true,
+          "example": 1257894000000000
+        },
+        "value": {
+          "description": "Value of the aggregate can contain \"number\".\nExamples:\n- value: 1\n- value: 0.5\n",
+          "example": 0.5
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "swagger"
+    },
+    {
+      "name": "events"
+    },
+    {
+      "name": "aggregates"
+    },
+    {
+      "name": "proxy"
+    },
+    {
+      "name": "logs"
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

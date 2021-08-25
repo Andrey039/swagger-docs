@@ -1,0 +1,3110 @@
+{
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "HTTP API for COIIOT Digital Twins.",
+    "title": "COIIOT Digital Twins API",
+    "version": "1.0.0"
+  },
+  "host": "localhost",
+  "basePath": "/api/v1",
+  "paths": {
+    "/clients/{client_id}/agents/{agent_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Get agent",
+        "operationId": "getAgentByID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/agentObject"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Patch agent",
+        "operationId": "patchAgentByID",
+        "parameters": [
+          {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies if the request is from another service or not",
+            "name": "X-Inter-Service",
+            "in": "header"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/patchAgentStatesByAgentId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/agentStateObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Agent ID",
+          "name": "agent_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/agents/{agent_id}/active_commands": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Get agent and sub-devices active commands",
+        "operationId": "getActiveCommandsByAgentID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/agentDevicesCommandsObject"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Agent ID",
+          "name": "agent_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/agents/{agent_id}/commands": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Get agent commands",
+        "operationId": "getCommandsByAgentID",
+        "parameters": [
+          {
+            "type": "integer",
+            "default": 100,
+            "x-nullable": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 0,
+            "x-nullable": true,
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/commandObject"
+                  }
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 100
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Post agent command",
+        "operationId": "postAgentCommand",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/createCommand"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/commandObject"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Agent ID",
+          "name": "agent_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/agents/{agent_id}/commands/{command_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Get agent command",
+        "operationId": "getAgentCommandByID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/commandObject"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Agent ID",
+          "name": "agent_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Command ID",
+          "name": "command_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/agents/{agent_id}/commands/{command_id}/status": {
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "agents"
+        ],
+        "summary": "Patch agent command status",
+        "operationId": "patchAgentCommandStatusByID",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/patchCommandStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/commandObject"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Agent ID",
+          "name": "agent_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Command ID",
+          "name": "command_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/devices/{device_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "devices"
+        ],
+        "summary": "Get device",
+        "operationId": "getDeviceByID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/deviceObject"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "devices"
+        ],
+        "summary": "Patch device",
+        "operationId": "patchDeviceByID",
+        "parameters": [
+          {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies if the request is from another service or not",
+            "name": "X-Inter-Service",
+            "in": "header"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/patchDeviceStatesByDeviceId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/deviceStateObject"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Device ID",
+          "name": "device_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/devices/{device_id}/commands": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "devices"
+        ],
+        "summary": "Get device commands",
+        "operationId": "getCommandsByDeviceID",
+        "parameters": [
+          {
+            "type": "integer",
+            "default": 100,
+            "x-nullable": true,
+            "name": "limit",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "default": 0,
+            "x-nullable": true,
+            "name": "offset",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/commandObject"
+                  }
+                },
+                "total": {
+                  "type": "integer",
+                  "example": 100
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "devices"
+        ],
+        "summary": "Post device command",
+        "operationId": "postDeviceCommand",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/createCommand"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/commandObject"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Device ID",
+          "name": "device_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/devices/{device_id}/commands/{command_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "devices"
+        ],
+        "summary": "Get device command",
+        "operationId": "getDeviceCommandByID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/commandObject"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Device ID",
+          "name": "device_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Command ID",
+          "name": "command_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/devices/{device_id}/commands/{command_id}/status": {
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "devices"
+        ],
+        "summary": "Patch device command status",
+        "operationId": "patchDeviceCommandStatusByID",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/patchCommandStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/commandObject"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Device ID",
+          "name": "device_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "string",
+          "description": "Command ID",
+          "name": "command_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/tags": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tags"
+        ],
+        "summary": "Get tags with states by their IDs",
+        "operationId": "getTagsByIDs",
+        "parameters": [
+          {
+            "minItems": 1,
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "collectionFormat": "multi",
+            "description": "One or more tag identifiers",
+            "name": "tag_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tagWithStateResponse"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/tags/{tag_id}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tags"
+        ],
+        "summary": "Get tag with state by Tag ID",
+        "operationId": "getTagByID",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/tagWithStateResponse"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tags"
+        ],
+        "summary": "Patch tag by Tag ID",
+        "operationId": "patchTagByID",
+        "parameters": [
+          {
+            "type": "boolean",
+            "default": false,
+            "description": "Specifies if the request is from another service or not",
+            "name": "X-Inter-Service",
+            "in": "header"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/patchTagStateObject"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/tagStateResponse"
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        },
+        {
+          "type": "integer",
+          "description": "Tag ID",
+          "name": "tag_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/variables": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "variables"
+        ],
+        "summary": "Create variable",
+        "operationId": "createVariable",
+        "parameters": [
+          {
+            "description": "Variable params object.",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "value_type",
+                "value",
+                "timestamp"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{2,50}$",
+                  "example": "variable"
+                },
+                "timestamp": {
+                  "description": "Timestamp with microseconds precision",
+                  "type": "integer",
+                  "example": 1257894000000000
+                },
+                "ttl": {
+                  "description": "Time-to-live as duration with microseconds precision, default is 30 days",
+                  "type": "integer",
+                  "default": 2592000000000,
+                  "example": 2592000000000
+                },
+                "value": {
+                  "type": "string",
+                  "example": "5"
+                },
+                "value_type": {
+                  "type": "string",
+                  "enum": [
+                    "integer",
+                    "float",
+                    "boolean",
+                    "string",
+                    "location",
+                    "timestamp"
+                  ],
+                  "example": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/variableObject"
+            }
+          },
+          "400": {
+            "description": "Bad params supplied or variable already exists",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/variables/{name}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "variables"
+        ],
+        "summary": "Get variable",
+        "operationId": "getVariable",
+        "parameters": [
+          {
+            "pattern": "^[A-Za-z0-9_-]{2,50}$",
+            "type": "string",
+            "description": "Variable Name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/variableObject"
+            }
+          },
+          "400": {
+            "description": "Bad params supplied",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "variables"
+        ],
+        "summary": "Set variable",
+        "operationId": "setVariable",
+        "parameters": [
+          {
+            "pattern": "^[A-Za-z0-9_-]{2,50}$",
+            "type": "string",
+            "description": "Variable Name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "ignore timestamp check",
+            "name": "force",
+            "in": "query"
+          },
+          {
+            "type": "boolean",
+            "description": "create if not exists",
+            "name": "create",
+            "in": "query"
+          },
+          {
+            "description": "Variable params object.",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "value",
+                "timestamp"
+              ],
+              "properties": {
+                "timestamp": {
+                  "description": "Timestamp with microseconds precision",
+                  "type": "integer",
+                  "example": 1257894000000000
+                },
+                "ttl": {
+                  "description": "Time-to-live as duration with microseconds precision, default is 30 days",
+                  "type": "integer",
+                  "default": 2592000000000,
+                  "example": 2592000000000
+                },
+                "value": {
+                  "type": "string",
+                  "example": "5"
+                },
+                "value_type": {
+                  "description": "required if variable is creating",
+                  "type": "string",
+                  "enum": [
+                    "integer",
+                    "float",
+                    "boolean",
+                    "string",
+                    "location",
+                    "timestamp"
+                  ],
+                  "example": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/variableObject"
+            }
+          },
+          "400": {
+            "description": "Bad params supplied",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "variables"
+        ],
+        "summary": "Delete variable",
+        "operationId": "deleteVariable",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Variable name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad params supplied",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/variables/{name}/decrement": {
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "variables"
+        ],
+        "summary": "Decrement variable",
+        "operationId": "decrementVariable",
+        "parameters": [
+          {
+            "pattern": "^[A-Za-z0-9_-]{2,50}$",
+            "type": "string",
+            "description": "Variable Name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "create if not exists",
+            "name": "create",
+            "in": "query"
+          },
+          {
+            "description": "Variable params object.",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "default_value": {
+                  "description": "default value if variable is creating",
+                  "type": "string",
+                  "default": "0",
+                  "example": "100"
+                },
+                "delta": {
+                  "description": "value delta for decrement",
+                  "type": "string",
+                  "default": "1",
+                  "example": "1"
+                },
+                "ttl": {
+                  "description": "Time-to-live as duration with microseconds precision, default is 30 days",
+                  "type": "integer",
+                  "default": 2592000000000,
+                  "example": 2592000000000
+                },
+                "value_type": {
+                  "description": "required if variable is creating",
+                  "type": "string",
+                  "enum": [
+                    "integer",
+                    "float",
+                    "timestamp"
+                  ],
+                  "example": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/variableObject"
+            }
+          },
+          "400": {
+            "description": "Bad params supplied",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/clients/{client_id}/variables/{name}/increment": {
+      "patch": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "variables"
+        ],
+        "summary": "Increment variable",
+        "operationId": "incrementVariable",
+        "parameters": [
+          {
+            "pattern": "^[A-Za-z0-9_-]{2,50}$",
+            "type": "string",
+            "description": "Variable Name",
+            "name": "name",
+            "in": "path",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "description": "create if not exists",
+            "name": "create",
+            "in": "query"
+          },
+          {
+            "description": "Variable params object.",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "default_value": {
+                  "description": "default value if variable is creating",
+                  "type": "string",
+                  "default": "0",
+                  "example": "100"
+                },
+                "delta": {
+                  "description": "value delta for increment",
+                  "type": "string",
+                  "default": "1",
+                  "example": "1"
+                },
+                "ttl": {
+                  "description": "Time-to-live as duration with microseconds precision, default is 30 days",
+                  "type": "integer",
+                  "default": 2592000000000,
+                  "example": 2592000000000
+                },
+                "value_type": {
+                  "description": "required if variable is creating",
+                  "type": "string",
+                  "enum": [
+                    "integer",
+                    "float",
+                    "timestamp"
+                  ],
+                  "example": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/variableObject"
+            }
+          },
+          "400": {
+            "description": "Bad params supplied",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/privates/clients/{client_id}/tags_states/{tags_ids}": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tags"
+        ],
+        "summary": "Get private tags with states by their IDs",
+        "operationId": "getPrivateTagsStatesByIDs",
+        "parameters": [
+          {
+            "minItems": 1,
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "collectionFormat": "pipes",
+            "description": "One or more tag identifiers",
+            "name": "tags_ids",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/tagPrivateWithStateResponse"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad params",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "type": "integer",
+          "description": "Client ID",
+          "name": "client_id",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/swagger.json": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "swagger"
+        ],
+        "summary": "Get swagger json",
+        "operationId": "getSwaggerJSON",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "429": {
+            "description": "Too Many Requests",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/errorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "agentDeviceObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "label",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "Raspberry Device"
+        },
+        "name": {
+          "type": "string",
+          "example": "raspberrypi_device"
+        },
+        "type": {
+          "$ref": "#/definitions/agentDeviceTypeObject"
+        }
+      }
+    },
+    "agentDeviceTypeObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "label",
+        "driver"
+      ],
+      "properties": {
+        "driver": {
+          "$ref": "#/definitions/driverObject"
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "Raspberry"
+        },
+        "name": {
+          "type": "string",
+          "example": "raspberrypi"
+        }
+      }
+    },
+    "agentDevicesCommandsObject": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "$ref": "#/definitions/commandObject"
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "device_id",
+              "command"
+            ],
+            "properties": {
+              "command": {
+                "$ref": "#/definitions/commandObject"
+              },
+              "device_id": {
+                "type": "integer",
+                "example": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "agentObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "client_id",
+        "label",
+        "type",
+        "tag",
+        "devices",
+        "first_seen_at",
+        "last_seen_at"
+      ],
+      "properties": {
+        "client_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/agentDeviceObject"
+          }
+        },
+        "first_seen_at": {
+          "description": "Timestamp with microseconds precision",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "Raspberry Agent"
+        },
+        "last_seen_at": {
+          "description": "Timestamp with microseconds precision. Short link to $state/$last_seen_at tag value.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "name": {
+          "type": "string",
+          "example": "raspberrypi_agent"
+        },
+        "tag": {
+          "$ref": "#/definitions/tagWithSubtreeObject"
+        },
+        "type": {
+          "$ref": "#/definitions/agentTypeObject"
+        }
+      }
+    },
+    "agentStateObject": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value",
+        "state_changed",
+        "timestamp",
+        "received_at"
+      ],
+      "properties": {
+        "received_at": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "state_changed": {
+          "type": "boolean",
+          "example": true
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "value": {
+          "example": "37.7"
+        }
+      }
+    },
+    "agentTypeObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "label",
+        "drivers"
+      ],
+      "properties": {
+        "drivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/driverObject"
+          }
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "Raspberry Agent Type"
+        },
+        "name": {
+          "type": "string",
+          "example": "raspberrypi agent type"
+        }
+      }
+    },
+    "commandObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "tags",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "created_at": {
+          "description": "Timestamp with microseconds precision",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "id": {
+          "type": "string",
+          "example": "some-id"
+        },
+        "reason": {
+          "type": "string",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "Failed to send command"
+        },
+        "status": {
+          "$ref": "#/definitions/commandStatus"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "tag_id",
+              "value"
+            ],
+            "properties": {
+              "tag_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "value": {
+                "example": true
+              }
+            }
+          }
+        },
+        "updated_at": {
+          "description": "Timestamp with microseconds precision",
+          "type": "integer",
+          "example": 1257894000000000
+        }
+      }
+    },
+    "commandStatus": {
+      "type": "string",
+      "enum": [
+        "new",
+        "sending",
+        "sent",
+        "received",
+        "skipped",
+        "done",
+        "failed"
+      ]
+    },
+    "createCommand": {
+      "type": "object",
+      "required": [
+        "tags"
+      ],
+      "properties": {
+        "tags": {
+          "type": "array",
+          "maxItems": 100,
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "tag_id",
+              "value"
+            ],
+            "properties": {
+              "tag_id": {
+                "type": "integer",
+                "example": 1
+              },
+              "value": {
+                "example": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "deviceAgentObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "label",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "Raspberry Agent"
+        },
+        "name": {
+          "type": "string",
+          "example": "raspberrypi_agent"
+        },
+        "type": {
+          "$ref": "#/definitions/deviceAgentTypeObject"
+        }
+      }
+    },
+    "deviceAgentTypeObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "label",
+        "drivers"
+      ],
+      "properties": {
+        "drivers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/driverObject"
+          }
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "Raspberry Agent Type"
+        },
+        "name": {
+          "type": "string",
+          "example": "raspberrypi agent type"
+        }
+      }
+    },
+    "deviceObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "client_id",
+        "name",
+        "label",
+        "type",
+        "tag",
+        "first_seen_at",
+        "last_seen_at"
+      ],
+      "properties": {
+        "agent": {
+          "$ref": "#/definitions/deviceAgentObject"
+        },
+        "client_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "first_seen_at": {
+          "description": "Timestamp with microseconds precision",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "id": {
+          "type": "integer",
+          "x-nullable": true,
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "x-nullable": true,
+          "example": "Raspberry Device"
+        },
+        "last_seen_at": {
+          "description": "Timestamp with microseconds precision. Short link to $state/$last_seen_at tag value.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "name": {
+          "type": "string",
+          "x-nullable": true,
+          "example": "raspberrypi_device"
+        },
+        "tag": {
+          "$ref": "#/definitions/tagWithSubtreeObject"
+        },
+        "type": {
+          "$ref": "#/definitions/deviceTypeObject"
+        }
+      }
+    },
+    "deviceStateObject": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value",
+        "state_changed",
+        "timestamp",
+        "received_at"
+      ],
+      "properties": {
+        "received_at": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "state_changed": {
+          "type": "boolean",
+          "example": true
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "value": {
+          "example": "37.7"
+        }
+      }
+    },
+    "deviceTypeObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "label",
+        "driver"
+      ],
+      "properties": {
+        "driver": {
+          "$ref": "#/definitions/driverObject"
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "Raspberry"
+        },
+        "name": {
+          "type": "string",
+          "example": "raspberrypi"
+        }
+      }
+    },
+    "driverObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "embedded"
+        }
+      }
+    },
+    "errorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "example": 500
+        },
+        "message": {
+          "type": "string",
+          "example": "Something bad happens."
+        }
+      }
+    },
+    "patchAgentStateObject": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value",
+        "timestamp",
+        "received_at"
+      ],
+      "properties": {
+        "received_at": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "value": {
+          "example": "37.7"
+        }
+      }
+    },
+    "patchAgentStatesByAgentId": {
+      "type": "object",
+      "required": [
+        "states"
+      ],
+      "properties": {
+        "states": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/patchAgentStateObject"
+          }
+        }
+      }
+    },
+    "patchCommandStatus": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "x-nullable": true,
+          "example": "Failed to send command"
+        },
+        "status": {
+          "$ref": "#/definitions/commandStatus"
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision",
+          "type": "integer",
+          "x-nullable": true,
+          "example": 1257894000000000
+        }
+      }
+    },
+    "patchDeviceStateObject": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value",
+        "timestamp",
+        "received_at"
+      ],
+      "properties": {
+        "received_at": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "value": {
+          "example": "37.7"
+        }
+      }
+    },
+    "patchDeviceStatesByDeviceId": {
+      "type": "object",
+      "required": [
+        "states"
+      ],
+      "properties": {
+        "states": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/patchDeviceStateObject"
+          }
+        }
+      }
+    },
+    "patchTagStateObject": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value",
+        "timestamp",
+        "received_at"
+      ],
+      "properties": {
+        "received_at": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "value": {
+          "example": "37.7"
+        }
+      }
+    },
+    "tagPrivateProperties": {
+      "type": "object",
+      "properties": {
+        "value_type": {
+          "description": "Exists only when tag.type is state or event or aggregate",
+          "type": "string",
+          "enum": [
+            "integer",
+            "float",
+            "boolean",
+            "string",
+            "location",
+            "timestamp"
+          ],
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "float"
+        }
+      },
+      "x-nullable": true
+    },
+    "tagPrivateWithStateResponse": {
+      "type": "object",
+      "required": [
+        "id",
+        "properties",
+        "type"
+      ],
+      "properties": {
+        "agent_id": {
+          "type": "integer",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": 1
+        },
+        "device_id": {
+          "type": "integer",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": 1
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "properties": {
+          "$ref": "#/definitions/tagPrivateProperties"
+        },
+        "state": {
+          "description": "Contains current value of tag. Exists only when tag.type is 'state'.",
+          "type": "object",
+          "properties": {
+            "received_at": {
+              "description": "Timestamp of current state from gateway with microseconds precision",
+              "type": "integer",
+              "x-nullable": true,
+              "example": 1257894000000000
+            },
+            "timestamp": {
+              "description": "Timestamp of current state from data source with microseconds precision",
+              "type": "integer",
+              "x-nullable": true,
+              "example": 1257894000000000
+            },
+            "value": {
+              "description": "Value of state.",
+              "x-nullable": true,
+              "example": 1
+            }
+          },
+          "x-nullable": true
+        },
+        "type": {
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "name": {
+              "type": "string",
+              "example": "event"
+            }
+          }
+        }
+      }
+    },
+    "tagProperties": {
+      "type": "object",
+      "properties": {
+        "aggregate": {
+          "description": "Exists only when tag.type is aggregate",
+          "type": "object",
+          "properties": {
+            "active": {
+              "description": "Exists only when tag.type is aggregate",
+              "type": "boolean",
+              "example": true
+            },
+            "calc_offset_sec": {
+              "description": "Exists only when tag.type is aggregate",
+              "type": "integer",
+              "example": 15
+            },
+            "operation": {
+              "description": "Exists only when tag.type is aggregate",
+              "type": "string",
+              "enum": [
+                "sum",
+                "min",
+                "max",
+                "avg",
+                "count"
+              ],
+              "x-nullable": true,
+              "x-omitempty": true,
+              "example": "min"
+            },
+            "period": {
+              "description": "Exists only when tag.type is aggregate",
+              "type": "string",
+              "enum": [
+                "1m",
+                "2m",
+                "3m",
+                "5m",
+                "10m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "3h",
+                "4h",
+                "6h",
+                "8h",
+                "12h",
+                "1d",
+                "1w",
+                "1M",
+                "2M",
+                "3M",
+                "4M",
+                "1Q",
+                "1S",
+                "1H",
+                "1Y",
+                "weekdays",
+                "weekend",
+                "custom"
+              ],
+              "x-nullable": true,
+              "x-omitempty": true,
+              "example": "1h"
+            },
+            "timezone": {
+              "description": "As specified in OS time zone database, exists only when tag.type is aggregate",
+              "type": "string",
+              "x-nullable": true,
+              "x-omitempty": true,
+              "example": "Europe/Moscow"
+            },
+            "update_active": {
+              "description": "Exists only when tag.type is aggregate",
+              "type": "boolean",
+              "default": false,
+              "x-omitempty": false,
+              "example": true
+            },
+            "update_interval": {
+              "description": "Exists only when tag.type is aggregate, empty string if update is not active",
+              "type": "string",
+              "enum": [
+                "",
+                "10m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "3h",
+                "4h",
+                "6h",
+                "8h",
+                "12h",
+                "1d",
+                "custom"
+              ],
+              "x-nullable": true,
+              "x-omitempty": true,
+              "example": "1h"
+            }
+          },
+          "x-nullable": true,
+          "x-omitempty": true
+        },
+        "autosave": {
+          "description": "Exists only when tag.type is state or event",
+          "type": "object",
+          "properties": {
+            "digital_twins": {
+              "description": "Exists only when tag.type is state",
+              "type": "boolean",
+              "x-nullable": true,
+              "x-omitempty": true,
+              "example": true
+            },
+            "long_term_storage": {
+              "description": "Exists only when tag.type is event",
+              "type": "boolean",
+              "x-nullable": true,
+              "x-omitempty": true,
+              "example": true
+            },
+            "operational_storage": {
+              "description": "Exists only when tag.type is event",
+              "type": "boolean",
+              "x-nullable": true,
+              "x-omitempty": true,
+              "example": true
+            }
+          },
+          "x-nullable": true,
+          "x-omitempty": true
+        },
+        "readonly": {
+          "description": "Exists only when tag.type is state",
+          "type": "boolean",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": true
+        },
+        "units": {
+          "description": "Exists only when tag.type is state or event or aggregate",
+          "type": "string",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "C"
+        },
+        "value_type": {
+          "description": "Exists only when tag.type is state or event or aggregate",
+          "type": "string",
+          "enum": [
+            "integer",
+            "float",
+            "boolean",
+            "string",
+            "location",
+            "timestamp"
+          ],
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "float"
+        }
+      },
+      "x-nullable": true
+    },
+    "tagRuleObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "enabled",
+        "lang",
+        "type"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "example": true
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "lang": {
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "name": {
+              "type": "string",
+              "example": "python"
+            }
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "inheritance": {
+              "type": "boolean",
+              "x-nullable": true,
+              "example": false
+            },
+            "tag": {
+              "type": "string",
+              "x-nullable": true,
+              "example": "some/tag"
+            }
+          },
+          "x-nullable": true
+        },
+        "name": {
+          "type": "string",
+          "example": "tag rule"
+        },
+        "type": {
+          "type": "integer",
+          "example": 1
+        }
+      }
+    },
+    "tagStateResponse": {
+      "type": "object",
+      "required": [
+        "tag_id",
+        "value",
+        "state_changed",
+        "timestamp",
+        "received_at"
+      ],
+      "properties": {
+        "received_at": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "state_changed": {
+          "type": "boolean",
+          "example": true
+        },
+        "tag_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision.",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "value": {
+          "example": "37.7"
+        }
+      }
+    },
+    "tagWithStateResponse": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "prev_id",
+        "full_name",
+        "type"
+      ],
+      "properties": {
+        "attrs": {
+          "description": "Non typed dictionary for user defined data.",
+          "type": "object",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "{\"key\": \"value\"}"
+        },
+        "full_name": {
+          "type": "string",
+          "example": "root/sub/leaf/tag"
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "some_tag"
+        },
+        "prev_id": {
+          "type": "integer",
+          "example": 0
+        },
+        "properties": {
+          "$ref": "#/definitions/tagProperties"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tagRuleObject"
+          },
+          "x-nullable": true,
+          "x-omitempty": true
+        },
+        "state": {
+          "description": "Contains current value of tag. Exists only when tag.type is 'state'.",
+          "type": "object",
+          "properties": {
+            "received_at": {
+              "description": "Timestamp of current state from gateway with microseconds precision",
+              "type": "integer",
+              "x-nullable": true,
+              "example": 1257894000000000
+            },
+            "timestamp": {
+              "description": "Timestamp of current state from data source with microseconds precision",
+              "type": "integer",
+              "x-nullable": true,
+              "example": 1257894000000000
+            },
+            "value": {
+              "description": "Value of state.",
+              "x-nullable": true,
+              "example": 1
+            }
+          },
+          "x-nullable": true
+        },
+        "type": {
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "name": {
+              "type": "string",
+              "example": "event"
+            }
+          }
+        }
+      }
+    },
+    "tagWithSubtreeObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "label",
+        "prev_id",
+        "full_name",
+        "type"
+      ],
+      "properties": {
+        "attrs": {
+          "description": "Non typed dictionary for user defined data.",
+          "type": "object",
+          "x-nullable": true,
+          "x-omitempty": true,
+          "example": "{\"key\": \"value\"}"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tagWithSubtreeObject"
+          }
+        },
+        "full_name": {
+          "type": "string",
+          "example": "root/sub/leaf/tag"
+        },
+        "id": {
+          "type": "integer",
+          "example": 1
+        },
+        "label": {
+          "type": "string",
+          "example": "some_label"
+        },
+        "name": {
+          "type": "string",
+          "example": "some_tag"
+        },
+        "prev_id": {
+          "type": "integer",
+          "example": 0
+        },
+        "properties": {
+          "$ref": "#/definitions/tagProperties"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tagRuleObject"
+          },
+          "x-nullable": true,
+          "x-omitempty": true
+        },
+        "state": {
+          "description": "Contains current value of tag. Exists only when tag.type is 'state'.",
+          "type": "object",
+          "properties": {
+            "received_at": {
+              "description": "Timestamp of current state from gateway with microseconds precision",
+              "type": "integer",
+              "x-nullable": true,
+              "example": 1257894000000000
+            },
+            "timestamp": {
+              "description": "Timestamp of current state from data source with microseconds precision",
+              "type": "integer",
+              "x-nullable": true,
+              "example": 1257894000000000
+            },
+            "value": {
+              "description": "Value of state.",
+              "x-nullable": true,
+              "example": 1
+            }
+          },
+          "x-nullable": true
+        },
+        "type": {
+          "type": "object",
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "example": 1
+            },
+            "name": {
+              "type": "string",
+              "example": "event"
+            }
+          }
+        }
+      }
+    },
+    "variableObject": {
+      "type": "object",
+      "required": [
+        "name",
+        "value_type",
+        "value",
+        "client_id",
+        "timestamp"
+      ],
+      "properties": {
+        "client_id": {
+          "type": "integer",
+          "example": 1
+        },
+        "expires_at": {
+          "description": "Expiration timestamp with microseconds precision",
+          "type": "integer",
+          "example": 1257895000000000
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{2,50}$",
+          "example": "variable-123"
+        },
+        "timestamp": {
+          "description": "Timestamp with microseconds precision",
+          "type": "integer",
+          "example": 1257894000000000
+        },
+        "value": {
+          "type": "string",
+          "example": "5"
+        },
+        "value_type": {
+          "type": "string",
+          "enum": [
+            "integer",
+            "float",
+            "boolean",
+            "string",
+            "location",
+            "timestamp"
+          ],
+          "example": "integer"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "swagger"
+    },
+    {
+      "name": "devices"
+    },
+    {
+      "name": "agents"
+    }
+  ],
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
